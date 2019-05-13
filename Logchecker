@@ -1,0 +1,52 @@
+<#
+.synopsis
+
+Schedule check the server log and generated a report.
+
+.Description
+This is a script used to schedule generating the server log report. and will using the function which out of this script.
+.Parameter Computername
+Servers list 
+.example
+ps c:\users\jacob\desktop\script -file c:\users\jacob\desktop\hostlist.txt
+
+need following function:
+1:Check the connection status(import external function)
+2:Write a function to filter the log, security, system error, power events. and then have a good format to html
+3:Write a task/job, import the function, have html report, good title, then using send mail command
+4:error action
+#>
+[CmdletBinding()]
+param
+(
+[Parameter(mandatory=$true, Helpmessage=”Please provide the hostlist path”)]
+[string] $hostlist
+)
+
+
+cd "C:\Users\Jacob\Documents\Study\Script\Powershell\Sample\Function\"
+. .\function.ps1 | Out-Null
+
+$VMs= get-content $hostlist
+
+try
+{
+
+
+connection($Computername=$VMs)
+Write-Host "$TVMs are online, $UVMs are unreachable" -ForegroundColor Green
+write-host "Checking the logs now..." -foregroundcolor Green
+Logreport($VMs=$TVMs)
+Write-Host "Logs have been generated to $logpath" -ForegroundColor Cyan
+Write-Host "Starting to send logs to jacob.ye@outlook.com now..." -ForegroundColor DarkCyan
+mail($report=$logpath)
+
+
+
+
+}
+
+catch
+{
+$ErrorStore
+}
